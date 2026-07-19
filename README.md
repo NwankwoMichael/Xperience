@@ -1,10 +1,18 @@
-# 🗺️ Xperience Platform
+<!-- # 🗺️ Xperience Platform
 
 [![Live Demo](https://shields.io)](https://xperience-app.onrender.com)
 [![API Docs](https://shields.io)](https://getpostman.com)
 [![CI Build Status](https://shields.io)](https://github.com)
 ![Tech Stack](https://img.shields.io/badge/Stack-Node.js%20%7C%20Express%20%7C%20TypeScript%20%7C%20MongoDB-lightgrey)
+[![License: MIT](https://shields.io)](./LICENSE) -->
+
+# 🗺️ Xperience Platform
+
+[![Live Demo](https://shields.io)](https://onrender.com)
+[![API Docs](https://shields.io)](#)
+[![CI Build Status](https://shields.io)](https://github.com)
 [![License: MIT](https://shields.io)](./LICENSE)
+![Tech Stack](https://shields.io)
 
 Xperience is a **secure, enterprise-grade travel and adventure management platform** built on a high-performance Express 5 and TypeScript architecture. Features structural Mongoose schemas, real-time advanced Mapbox GL route markers, automated crypto password recovery workflows, robust multi-role CMS dashboard matrix trees, and a production-hardened Stripe secure webhook transactional ledger gateway.
 
