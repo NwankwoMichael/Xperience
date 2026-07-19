@@ -35,9 +35,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# 🖼️ USER IMAGE BINARY MULTIPART CACHES
-public/img/users/user-*.jpg
-public/img/trips/trip-*.jpg
 
 # 💻 OPERATING SYSTEM BLATANTS
 .DS_Store
