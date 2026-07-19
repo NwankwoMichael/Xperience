@@ -12,7 +12,7 @@
 ![Stripe](https://img.shields.io/badge/Stripe-008CDD?logo=stripe&logoColor=white)
 ![Helmet](https://img.shields.io/badge/Helmet-000000?logo=helmet&logoColor=white)
 
-[![Build Status](https://github.com/NwankwoMichael/Xperience/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/NwankwoMichael/Xperience/actions/workflows/ci.yml)
+[![Build Status](https://github.com/NwankwoMichael/Xperience/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/NwankwoMichael/Xperience/actions/.github/workflows/ci.yml)
 
 Xperience is a **secure, enterprise-grade travel and adventure management platform** built on a high-performance Express 5 and TypeScript architecture. Features structural Mongoose schemas, real-time advanced Mapbox GL route markers, automated crypto password recovery workflows, robust multi-role CMS dashboard matrix trees, and a production-hardened Stripe secure webhook transactional ledger gateway.
 
