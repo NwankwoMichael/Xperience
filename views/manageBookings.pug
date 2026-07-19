@@ -1,0 +1,62 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? "side-nav--active" : ""}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`/img/icons.svg#icon-${icon}`) 
+      | #{text}
+
+block content 
+  main.main
+    .user-view
+      nav.user-view__menu
+        ul.side-nav
+          +navItem("/me", "Settings", "settings", false)
+          +navItem("/my-trips", "My bookings", "briefcase", false)
+          +navItem("/my-reviews", "My reviews", "star", false)        
+          +navItem("/me", "Billing", "credit-card")
+
+        - if (user && user.role === "admin")     
+          .admin-nav
+            h5.admin-nav__heading Admin Panel
+            ul.side-nav
+              +navItem("/manage-trips", "Manage trips", "map", false)
+              +navItem("/manage-users", "Manage users", "users", false)
+              +navItem("/manage-reviews", "Manage reviews", "star", false)
+              +navItem("/manage-bookings", "Manage bookings", "briefcase", true)
+
+      .user-view__content
+        .user-view__form-container(style="max-width: 100rem; padding: 0 4rem;")
+          div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;")
+            h2.heading-secondary Global Operational Bookings Ledger
+            p.card__text(style="font-size: 1.4rem; color: var(--color-text-muted); margin: 0;") 
+              | Total Transactions: 
+              strong= platformBookings ? platformBookings.length : 0
+
+          //- 📊 THE MANAGEMENT INVENTORY TABLE MATRIX
+          .admin-table-wrapper(style="overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 1rem 3rem rgba(0,0,0,0.05); border: 1px solid var(--color-neutral-mid);")
+            table.admin-table.admin-table--bookings(style="width: 100%; border-collapse: collapse; font-size: 1.4rem; text-align: left;")
+              thead(style="background-color: var(--color-charcoal); color: #fff; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 0.1rem;")
+                tr
+                  th(style="padding: 1.5rem 2rem;") Customer Explorer
+                  th(style="padding: 1.5rem 2rem;") Booked Adventure
+                  th(style="padding: 1.5rem 2rem;") Price Charged
+                  th(style="padding: 1.5rem 2rem;") Settlement Date
+                  th(style="padding: 1.5rem 2rem;") Payment State
+                  th(style="padding: 1.5rem 2rem; text-align: center;") Actions
+              tbody
+                if platformBookings && platformBookings.length > 0
+                  each book in platformBookings
+                    tr.admin-table-row
+                      td(style="padding: 1.5rem 2rem; font-weight: 700; color: var(--color-text-dark);")= book.user ? book.user.name : 'Unknown User'
+                      td(style="padding: 1.5rem 2rem; font-weight: 500;")= book.trip ? book.trip.name : 'Unknown Adventure'
+                      td(style="padding: 1.5rem 2rem; font-weight: 700; color: var(--color-green-teal);")= `$${book.price}`
+                      td(style="padding: 1.5rem 2rem; color: var(--color-text-muted);")= new Date(book.createdAt).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})
+                      td(style="padding: 1.5rem 2rem;")
+                        span(style="padding: 0.4rem 1.2rem; border-radius: 10rem; font-size: 1.1rem; font-weight: 700; background-color: #d4edda; color: var(--color-green-deep); text-transform: uppercase;") Paid / Cleared
+                      td(style="padding: 1.5rem 2rem; text-align: center;")
+                        button.btn.btn--small(style="background-color: #eb4d4b; color: #fff; padding: 0.8rem 1.5rem !important; font-size: 1.2rem !important;" data-action="delete-booking" data-id=book.id) Revoke Ticket
+                else
+                  tr
+                    td(colspan="6" style="padding: 4rem; text-align: center; color: var(--color-text-subtle); font-style: italic;") No operational booking receipts found inside system registries.

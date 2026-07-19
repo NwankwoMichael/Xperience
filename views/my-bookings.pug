@@ -1,0 +1,84 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? "side-nav--active" : ""}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`/img/icons.svg#icon-${icon}`) 
+      | #{text}
+
+block content 
+  main.main
+    .user-view
+      nav.user-view__menu
+        ul.side-nav
+          +navItem("/me", "Settings", "settings", false)
+          //- 🔄 Upgraded template endpoint path to match view router definitions
+          +navItem("/my-trips", "My bookings", "briefcase", true)
+          +navItem("/my-reviews", "My reviews", "star", false)        
+          +navItem("#", "Billing", "credit-card")
+
+        - if (user && user.role === "admin")     
+          .admin-nav
+            h5.admin-nav__heading Admin
+            ul.side-nav
+              +navItem("#", "Manage trips", "map")
+              +navItem("#", "Manage users", "users")
+              +navItem("#", "Manage reviews", "star")
+              +navItem("#", "Manage bookings", "briefcase")
+
+      .user-view__content
+        .card-container(style="padding: 0; width: 100%; max-width: 100%;")
+          //- 🔄 Array evaluations refactored to look for populated trips from the backend payload matrix
+          if trips && trips.length > 0
+            each trip in trips
+              .card
+                .card__header
+                  .card__picture
+                    .card__picture-overlay &nbsp;
+                    //- 🛠️ File destination layout updated to match sharp image processor output folder
+                    img.card__picture-img(src=`/img/trips/${trip.imageCover}` alt=`${trip.name}`)
+                  h3.heading-tertirary
+                    span= trip.name
+
+                .card__details
+                  h4.card__sub-heading= `${trip.difficulty} ${trip.duration}-day trip`
+                  p.card__text= trip.summary 
+                
+                  .card__data
+                    svg.card__icon
+                      use(xlink:href='/img/icons.svg#icon-map-pin')
+                    span= trip.startLocation.description
+                  
+                  .card__data
+                    svg.card__icon
+                      use(xlink:href='/img/icons.svg#icon-calendar')
+                    span= trip.startDates && trip.startDates[0] ? trip.startDates[0].toLocaleString('en-us', {month: "long", year: "numeric"}) : 'Coming Soon'
+                  
+                  .card__data
+                    svg.card__icon
+                      use(xlink:href='/img/icons.svg#icon-flag')
+                    span= `${trip.locations.length} stops` 
+                  
+                  .card__data
+                    svg.card__icon
+                      use(xlink:href='/img/icons.svg#icon-user')
+                    span= `${trip.maxGroupSize} people`
+
+                .card__footer
+                  p
+                    span.card__footer-value= `$${trip.price}`
+                    | 
+                    span.card__footer-text per person
+                  p.card__ratings
+                    span.card__footer-value= trip.ratingsAverage
+                    | 
+                    span.card__footer-text= `rating (${trip.ratingsQuantity})`
+                  //- 🔄 Link targets match the absolute Express 5 slug endpoints
+                  a.btn.btn--green.btn--small(href=`/trip/${trip.slug}`) Details
+          
+          else 
+            .no-bookings(style="grid-column: 1 / -1; text-align: center; padding: 6rem 2rem; background-color: #fff; border-radius: 3px; box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.1);")
+              h2.heading-secondary(style="margin-bottom: 2rem; font-size: 2.25rem; text-transform: uppercase; color: var(--color-green-teal, #3fa796);") You haven't booked any trips yet! 🗺️
+              p.card__text(style="font-size: 1.6rem; margin-bottom: 4rem; color: var(--color-text-muted, #5d6d7e); font-style: italic;") Head over to our homepage to explore incredible adventures across the globe.
+              a.btn.btn--green.btn--large(href="/") Explore All Trips

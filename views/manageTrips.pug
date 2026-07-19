@@ -1,0 +1,98 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? "side-nav--active" : ""}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`/img/icons.svg#icon-${icon}`) 
+      | #{text}
+
+block content 
+  main.main
+    .user-view
+      nav.user-view__menu
+        ul.side-nav
+          +navItem("/me", "Settings", "settings", false)
+          +navItem("/my-trips", "My bookings", "briefcase", false)
+          +navItem("/my-reviews", "My reviews", "star", false)        
+          +navItem("/me", "Billing", "credit-card")
+
+        - if (user && user.role === "admin")     
+          .admin-nav
+            h5.admin-nav__heading Admin Panel
+            ul.side-nav
+              +navItem("/manage-trips", "Manage trips", "map", true)
+              +navItem("/manage-users", "Manage users", "users")
+              +navItem("/manage-reviews", "Manage reviews", "star")
+              +navItem("/manage-bookings", "Manage bookings", "briefcase")
+
+      .user-view__content
+        .user-view__form-container(style="max-width: 100rem; padding: 0 4rem;")
+          div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;")
+            h2.heading-secondary Global Trip Inventory
+            button.btn.btn--green.btn--small#btn-trigger-create-modal + Create New Trip
+
+          //- 📊 THE MANAGEMENT INVENTORY TABLE MATRIX
+          .admin-table-wrapper(style="overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 1rem 3rem rgba(0,0,0,0.05); border: 1px solid var(--color-neutral-mid);")
+            table.admin-table.admin-table--trips(style="width: 100%; border-collapse: collapse; font-size: 1.4rem; text-align: left;")
+              thead(style="background-color: var(--color-charcoal); color: #fff; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 0.1rem;")
+                tr
+                  th(style="padding: 1.5rem 2rem;") Cover
+                  th(style="padding: 1.5rem 2rem;") Trip Name
+                  th(style="padding: 1.5rem 2rem;") Duration
+                  th(style="padding: 1.5rem 2rem;") Max Size
+                  th(style="padding: 1.5rem 2rem;") Price
+                  th(style="padding: 1.5rem 2rem; text-align: center;") Actions
+              tbody
+                if trips && trips.length > 0
+                  each trip in trips
+                    tr(style="border-bottom: 1px solid var(--color-neutral-mid); transition: background 0.2s;" onmouseover="this.style.backgroundColor='#fcfcfc'" onmouseout="this.style.backgroundColor='transparent'")
+                      td(style="padding: 1.5rem 2rem;")
+                        img(src=`/img/trips/${trip.imageCover || 'default-cover.jpg'}` style="height: 4.5rem; width: 6.5rem; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;")
+                      td(style="padding: 1.5rem 2rem; font-weight: 700; color: var(--color-text-dark);")= trip.name
+                      td(style="padding: 1.5rem 2rem;")= `${trip.duration} Days`
+                      td(style="padding: 1.5rem 2rem;")= `${trip.maxGroupSize} Pax`
+                      td(style="padding: 1.5rem 2rem; font-weight: 700; color: var(--color-green-teal);")= `$${trip.price}`
+                      td(style="padding: 1.5rem 2rem; text-align: center; display: flex; gap: 1rem; justify-content: center; align-items: center;")
+                        button.btn.btn--small(style="background-color: var(--color-green-teal); color: #fff; padding: 0.8rem 1.5rem !important; font-size: 1.2rem !important;" data-action="edit" data-trip=JSON.stringify(trip)) Edit
+                        button.btn.btn--small(style="background-color: #eb4d4b; color: #fff; padding: 0.8rem 1.5rem !important; font-size: 1.2rem !important;" data-action="delete" data-id=trip.id data-name=trip.name) Delete
+                else
+                  tr
+                    td(colspan="6" style="padding: 4rem; text-align: center; color: var(--color-text-subtle); font-style: italic;") No adventures found in warehouse inventory.
+
+    //- 🛠️ PERSISTENT MANAGEMENT OVERLAY MODAL FORM GRID
+    .admin-modal#admin-trip-modal(style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30,41,45,0.6); z-index: 10000; align-items: center; justify-content: center;")
+      .login-form(style="max-width: 65rem; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;")
+        span#modal-close-trigger(style="position: absolute; top: 2rem; right: 2rem; font-size: 2.5rem; cursor: pointer; color: var(--color-text-subtle); font-weight: 700;") &times;
+        h2.heading-secondary.ma-bt-md#modal-title-context Setup Adventure Item
+        
+        form.form#form-admin-trip-operation
+          input#form-trip-id(type="hidden")
+          .form__group
+            label.form__label(for='trip-name') Adventure Item Name
+            input#trip-name.form__input(type='text' placeholder='e.g., The Alpine Glacier Trek' required)
+          .form__group(style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;")
+            div
+              label.form__label(for='trip-duration') Duration (Days)
+              input#trip-duration.form__input(type='number' placeholder='e.g., 5' required min="1")
+            div
+              label.form__label(for='trip-size') Max Group Size
+              input#trip-size.form__input(type='number' placeholder='e.g., 12' required min="1")
+          .form__group(style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;")
+            div
+              label.form__label(for='trip-price') Retail Ticket Price ($)
+              input#trip-price.form__input(type='number' placeholder='e.g., 899' required min="1")
+            div
+              label.form__label(for='trip-difficulty') Technical Difficulty
+              select#trip-difficulty.form__input(style="padding: 1.4rem;")
+                option(value='easy') Easy
+                option(value='medium') Medium
+                option(value='difficult') Difficult
+          .form__group
+            label.form__label(for='trip-summary') Brief Marketplace Summary
+            input#trip-summary.form__input(type='text' placeholder='Provide a compelling summary line...' required)
+          .form__group
+            label.form__label(for='trip-description') High-Detail Narrative Itinerary
+            textarea#trip-description.form__input(placeholder='Break down the days and adventures...' rows='4' style='resize: vertical;' required)
+          .form__group.right(style="margin-top: 3rem;")
+            button.btn.btn--green.btn--small#btn-modal-submit Save Adventure Pack

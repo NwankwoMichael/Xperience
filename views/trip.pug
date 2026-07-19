@@ -1,0 +1,117 @@
+extends base
+include _reviewCard
+
+block append head
+  //- 🛠️ Upgraded to a completely stable, production-grade Mapbox GL JS version release layout
+  script(src='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js')
+  link(rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css')
+
+mixin overviewBox(label, text, icon)
+  .overview-box__detail
+    svg.overview-box__icon
+      use(xlink:href=`/img/icons.svg#icon-${icon}`)
+    span.overview-box__label= label
+    span.overview-box__text= text
+
+block content
+  section.section-header
+    .header__hero
+      .header__hero-overlay &nbsp;
+      //- 🛠️ File destination targets updated to read out of processed trips folder matrix
+      img.header__hero-img(src=`/img/trips/${trip.imageCover}`, alt=`${trip.name}`)
+
+    .heading-box
+      h1.heading-primary
+        span=`${trip.name} trip`
+      .heading-box__group
+        .heading-box__detail
+          svg.heading-box__icon
+            use(xlink:href='/img/icons.svg#icon-clock')
+          span.heading-box__text=`${trip.duration} days`
+        .heading-box__detail
+          svg.heading-box__icon
+            use(xlink:href='/img/icons.svg#icon-map-pin')
+          span.heading-box__text= trip.startLocation.address && trip.startLocation.address.split(',')[3] ? `${trip.startLocation.address.split(',')[1]}, ${trip.startLocation.address.split(',')[3]}` : trip.startLocation.description
+
+  section.section-description
+    .overview-box
+      div
+        .overview-box__group
+          h2.heading-secondary.ma-bt-lg Quick facts
+          - const date = trip.startDates && trip.startDates ? trip.startDates.toLocaleString("en-us", {month: "long", year: "numeric"}) : "Coming Soon"
+
+          +overviewBox("Next date", date, "calendar")
+          +overviewBox("Difficulty", trip.difficulty, "trending-up")
+          +overviewBox("Participants", `${trip.maxGroupSize} people`, "user")
+          +overviewBox("Rating", `${trip.ratingsAverage} / 5`, "star")
+
+        .overview-box__group
+          h2.heading-secondary.ma-bt-lg Your trip guides
+          each guide in trip.guides
+            .overview-box__detail
+              img.overview-box__img(src=`/img/users/${guide.photo}`, alt=`${guide.name}`)
+              - if (guide.role === "lead-guide")
+                span.overview-box__label Lead guide
+              - if (guide.role === "guide")
+                span.overview-box__label Trip guide
+              span.overview-box__text= guide.name
+
+    .description-box
+      h2.heading-secondary.ma-bt-lg= `About ${trip.name} trip`
+      - const paragraphs = trip.description ? trip.description.split("\n") : ["No description available for this trip yet."]
+      each p in paragraphs
+        p.description__text= p
+
+  section.section-pictures
+    each img, i in trip.images
+      .picture-box
+        img.picture-box__img(src=`/img/trips/${img}`, alt=`${trip.name} Trip ${i + 1}`, class=`picture-box__img--${i + 1}`)
+
+  section.section-map
+    #map(data-locations=`${JSON.stringify(trip.locations)}`, data-mapbox-token=mapboxToken)
+
+  section.section-reviews
+    //- THE EXPERIENCE CONDITIONAL GATEWAY: Only displays review form input frames to verified bookers!
+    if user && isExperienced
+      .reviews__form-container(style="max-width: 60rem; margin: 0 auto 5rem auto; background-color: #fff; padding: 4rem; border-radius: 5px; box-shadow: 0 2rem 6rem rgba(0,0,0,0.06);")
+        h2.heading-secondary.ma-bt-md Share Your Experience! ⭐
+        //- 🔄 Realigned dataset fields to pass trip parameters safely onto frontend client bundles
+        form.form.form--review(data-trip-id=trip.id)
+          .form__group.ma-bt-md
+            label.form__label(for='rating') Rating (1-5 Stars)
+            select#review-rating.form__input(style="font-family: inherit; font-size: 1.5rem; padding: 1.25rem 1.75rem;", required)
+              option(value='5') 5 - Exceptional
+              option(value='4') 4 - Very Good
+              option(value='3') 3 - Average
+              option(value='2') 2 - Disappointing
+              option(value='1') 1 - Terrible
+          .form__group.ma-bt-md
+            label.form__label(for='review-text') Your Review
+            textarea#review-text.form__input(placeholder='Tell us about the guides, the sights, and your overall adventure...', required, rows='4', style='font-family: inherit; resize: vertical;')
+          .form__group
+            button.btn.btn--green.btn--small Submit Review
+
+    .reviews
+      each review in trip.reviews
+        +reviewCard(review)
+
+  section.section-cta
+    .cta
+      .cta__img.cta__img--logo(style="background-color: var(--color-charcoal, #1e292d); padding: 1rem; display: flex; align-items: center; justify-content: center;")
+        img(src='/img/circular-badge-logo.png', alt='Xperience logo' style='width: 100%; height: auto; object-fit: contain;')
+      if trip.images && trip.images[1]
+        img.cta__img.cta__img--1(src=`/img/trips/${trip.images[1]}`, alt='Trip picture')
+      if trip.images && trip.images[2]
+        img.cta__img.cta__img--2(src=`/img/trips/${trip.images[2]}`, alt='Trip picture')
+      .cta__content
+        h2.heading-secondary What are you waiting for?
+        p.cta__text= `${trip.duration} days. 1 adventure. Infinite memories. Make it yours today!`
+
+        if user
+          if isBooked
+            a.btn.btn--green.span-all-rows(style="background-image: linear-gradient(to right, var(--color-green-fresh, #4ca638), var(--color-green-teal, #3fa796)); cursor: pointer; box-shadow: none;" href="/me") You already booked this trip! 🎉
+          else
+            //- 🔄 Mapped target element identifiers to parse clean trip data states in Stripe transactions
+            button.btn.btn--green.span-all-rows#book-trip(data-trip-id=`${trip.id}` data-stripe-public-key=`${stripePublicKey}`) Book trip now!
+        else 
+          a.btn.btn--green.span-all-rows(href="/login") Log in to book trip

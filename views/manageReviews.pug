@@ -1,0 +1,64 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? "side-nav--active" : ""}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`/img/icons.svg#icon-${icon}`) 
+      | #{text}
+
+block content 
+  main.main
+    .user-view
+      nav.user-view__menu
+        ul.side-nav
+          +navItem("/me", "Settings", "settings", false)
+          +navItem("/my-trips", "My bookings", "briefcase", false)
+          +navItem("/my-reviews", "My reviews", "star", false)        
+          +navItem("/me", "Billing", "credit-card")
+
+        - if (user && user.role === "admin")     
+          .admin-nav
+            h5.admin-nav__heading Admin Panel
+            ul.side-nav
+              +navItem("/manage-trips", "Manage trips", "map", false)
+              +navItem("/manage-users", "Manage users", "users", false)
+              +navItem("/manage-reviews", "Manage reviews", "star", true)
+              +navItem("/manage-bookings", "Manage bookings", "briefcase", false)
+
+      .user-view__content
+        .user-view__form-container(style="max-width: 100rem; padding: 0 4rem;")
+          div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;")
+            h2.heading-secondary Customer Testimonials Matrix
+            p.card__text(style="font-size: 1.4rem; color: var(--color-text-muted); margin: 0;") 
+              | Active Reviews: 
+              strong= platformReviews ? platformReviews.length : 0
+
+          //- 📊 THE MANAGEMENT INVENTORY TABLE MATRIX
+          .admin-table-wrapper(style="overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 1rem 3rem rgba(0,0,0,0.05); border: 1px solid var(--color-neutral-mid);")
+            table.admin-table.admin-table--reviews(style="width: 100%; border-collapse: collapse; font-size: 1.4rem; text-align: left;")
+              thead(style="background-color: var(--color-charcoal); color: #fff; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 0.1rem;")
+                tr
+                  th(style="padding: 1.5rem 2rem;") Explorer
+                  th(style="padding: 1.5rem 2rem;") Adventure Item
+                  th(style="padding: 1.5rem 2rem;") Rating Score
+                  th(style="padding: 1.5rem 2rem; width: 40%;") Narrative Review Text
+                  th(style="padding: 1.5rem 2rem; text-align: center;") Actions
+              tbody
+                if platformReviews && platformReviews.length > 0
+                  each rev in platformReviews
+                    tr.admin-table-row
+                      td(style="padding: 1.5rem 2rem; font-weight: 700; color: var(--color-text-dark);")= rev.user ? rev.user.name : 'Deleted User'
+                      td(style="padding: 1.5rem 2rem; font-weight: 500;")= rev.trip ? rev.trip.name : 'Deleted Trip'
+                      td(style="padding: 1.5rem 2rem; color: var(--color-orange-energy); font-weight: 700;")
+                        each star in [1, 2, 3, 4, 5]
+                          if star <= rev.rating
+                            | ★
+                          else
+                            | ☆
+                      td(style="padding: 1.5rem 2rem; color: var(--color-text-muted); font-style: italic; line-height: 1.5;")= rev.review
+                      td(style="padding: 1.5rem 2rem; text-align: center;")
+                        button.btn.btn--small(style="background-color: #eb4d4b; color: #fff; padding: 0.8rem 1.5rem !important; font-size: 1.2rem !important;" data-action="delete-review" data-id=rev.id) Moderate / Delete
+                else
+                  tr
+                    td(colspan="5" style="padding: 4rem; text-align: center; color: var(--color-text-subtle); font-style: italic;") No traveler reviews discovered inside system registries.

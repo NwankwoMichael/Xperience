@@ -1,0 +1,31 @@
+doctype html
+html(lang="en")
+  head
+    //- DYNAMIC BLOCK HOOK: Placed at the top so child templates can inject specialized scripts (like Mapbox configuration parameters)
+    block head
+      meta(charset='UTF-8') 
+      meta(name='viewport' content='width=device-width, initial-scale=1.0') 
+      
+    //- 🚀 UNIVERSAL ASSETS: Standard brand elements shared across all user application dashboards
+    link(rel="shortcut icon" type="image/png" href='/img/favicon.png') 
+    link(rel='stylesheet' href="/css/style.css")
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+    
+    title Xperience | #{title}
+
+  body(data-alert=`${alert ? alert : ''}`) 
+    // HEADER
+    include _header
+
+    // CONTENT SECTION FRAME
+    block content 
+      h1 This is an Xperience placeholder heading
+
+    // FOOTER
+    include _footer
+
+    //- 💳 SECURE TRANS-CHECKOUT STRIPE ENGINE HOOK
+    script(src='https://js.stripe.com/v3/')
+    
+    //- 📦 PARCEL BUNDLED CLIENT-SIDE CLIENT ENGINES
+    script(src='/js/bundle.js')
