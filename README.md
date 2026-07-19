@@ -1,10 +1,19 @@
 # 🗺️ Xperience Platform
 
 [![Live Demo](https://img.shields.io/badge/Demo-Render-blue)](https://xperience-app.onrender.com/)
-[![API Docs](https://img.shields.io/badge/API-Postman-orange)](https://documenter.getpostman.com/view/54238187/2sBXqNmJEt)
+[![API Docs](https://img.shields.io/badge/API-Postman-orange)](https://documenter.getpostman.com/view/54238187/2sBY4PNzgJ)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-![Tech Stack](https://img.shields.io/badge/Stack-Node.js%20%7C%20Express%20%7C%20TypeScript%20%7C%20MongoDB-lightgrey)
-[![Build Status](https://github.com/NwankwoMichael/Xperience/actions/workflows/ci.yml/badge.svg)](https://github.com/NwankwoMichael/Xperience/actions)
+![Tech Stack](https://shields.io)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
+![Mapbox](https://img.shields.io/badge/Mapbox-000000?logo=mapbox&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-008CDD?logo=stripe&logoColor=white)
+![Parcel](https://img.shields.io/badge/Parcel-F7B93E?logo=parcel&logoColor=black)
+![Helmet](https://img.shields.io/badge/Helmet-000000?logo=helmet&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
+[![Build Status](https://github.com/NwankwoMichael/Xperience/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/NwankwoMichael/Xperience/actions/workflows/ci.yml)
 
 Xperience is a **secure, enterprise-grade travel and adventure management platform** built on a high-performance Express 5 and TypeScript architecture. Features structural Mongoose schemas, real-time advanced Mapbox GL route markers, automated crypto password recovery workflows, robust multi-role CMS dashboard matrix trees, and a production-hardened Stripe secure webhook transactional ledger gateway.
 
@@ -157,7 +166,7 @@ npm start
 
 📖 API Documentation
 
-👉 [![API Docs](https://img.shields.io/badge/API-Postman-orange)]()
+👉 [![API Docs](https://img.shields.io/badge/API-Postman-orange)](https://documenter.getpostman.com/view/54238187/2sBY4PNzgJ)
 
 ---
 
