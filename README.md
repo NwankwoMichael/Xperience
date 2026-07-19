@@ -1,6 +1,6 @@
 # 🗺️ Xperience Platform
 
-[![Live Demo](https://img.shields.io/badge/Demo-Render-blue)](https://natours-js.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Demo-Render-blue)](https://xperience-app.onrender.com/)
 [![API Docs](https://img.shields.io/badge/API-Postman-orange)](https://documenter.getpostman.com/view/54238187/2sBXqNmJEt)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 ![Tech Stack](https://img.shields.io/badge/Stack-Node.js%20%7C%20Express%20%7C%20TypeScript%20%7C%20MongoDB-lightgrey)
@@ -151,7 +151,7 @@ npm start
 
 🌐 Live Demo
 
-👉 [![Live Demo](https://img.shields.io/badge/Demo-Render-blue)]()
+👉 [![Live Demo](https://img.shields.io/badge/Demo-Render-blue)](https://xperience-app.onrender.com/)
 
 ---
 
